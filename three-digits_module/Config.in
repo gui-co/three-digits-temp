@@ -1,0 +1,3 @@
+config BR2_PACKAGE_THREE_DIGITS_MODULE
+	bool "Three-digits module"
+
