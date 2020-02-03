@@ -1,0 +1,3 @@
+config BR2_PACKAGE_THREE_DIGITS_DT
+	bool "Device tree for the three-digits module"
+

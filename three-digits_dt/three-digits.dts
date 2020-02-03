@@ -1,0 +1,41 @@
+/dts-v1/;
+/plugin/;
+
+/{
+    compatible = "brcm,bcm2835";
+
+    fragment@0 {
+        target = <&gpio>;
+        __overlay__ {
+            three_digits_pins: three-digits-pins@0 {
+                brcm,pins = <2 3 4 7 8 9 10 11 14 15 17 18>;
+                brcm,function = <1>;
+                brcm,pull = <0>;
+            };
+        };
+    };
+
+    fragment@1 {
+        target-path = "/";
+        __overlay__ {
+            three_digits: three-digits@0 {
+                compatible = "gpio-three-digits";
+                pinctrl-names = "default";
+                pinctrl-0 = <&three_digits_pins>;
+                gpios-three-digits = <&gpio 2  1>,
+                                     <&gpio 3  1>,
+                                     <&gpio 4  1>,
+                                     <&gpio 7  1>,
+                                     <&gpio 8  1>,
+                                     <&gpio 9  1>,
+                                     <&gpio 10 1>,
+                                     <&gpio 11 1>,
+                                     <&gpio 14 1>,
+                                     <&gpio 15 1>,
+                                     <&gpio 17 1>,
+                                     <&gpio 18 1>;
+            };
+        };
+    };
+};
+

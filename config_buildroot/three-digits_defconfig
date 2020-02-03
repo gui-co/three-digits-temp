@@ -32,12 +32,14 @@ BR2_PACKAGE_HOST_MTOOLS=y
 BR2_TARGET_ROOTFS_EXT2=y
 BR2_TARGET_ROOTFS_EXT2_4=y
 BR2_TARGET_ROOTFS_EXT2_SIZE="120M"
-BR2_ROOTFS_POST_BUILD_SCRIPT="board/raspberrypi/post-build.sh"
-BR2_ROOTFS_POST_IMAGE_SCRIPT="board/raspberrypi/post-image.sh"
+
+# Post image script
+BR2_ROOTFS_POST_IMAGE_SCRIPT="${BR2_EXTERNAL}/config_buildroot/post-image.sh"
 
 # Rootfs overlay
 BR2_ROOTFS_OVERLAY="${BR2_EXTERNAL}/config_buildroot/rootfs_overlay"
 
 # Packages
 BR2_PACKAGE_OPENSSH=y
+BR2_LINUX_KERNEL_DTB_OVERLAY_SUPPORT=y
 

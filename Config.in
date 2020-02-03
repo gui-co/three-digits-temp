@@ -1,0 +1,2 @@
+source "$BR2_EXTERNAL_THREE_DIGITS_PATH/three-digits_dt/Config.in"
+
