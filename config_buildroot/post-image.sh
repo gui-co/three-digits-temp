@@ -6,6 +6,8 @@ GENIMAGE_TMP="${BUILD_DIR}/genimage.tmp"
 CONFIG_DIR="$(dirname $0)"
 GENIMAGE_CFG="${CONFIG_DIR}/genimage-three-digits.cfg"
 
+cp "${CONFIG_DIR}/config.txt" "${BINARIES_DIR}/rpi-firmware"
+
 trap 'rm -rf "${ROOTPATH_TMP}"' EXIT
 ROOTPATH_TMP="$(mktemp -d)"
 
