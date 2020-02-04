@@ -19,7 +19,7 @@
         target-path = "/";
         __overlay__ {
             three_digits: three-digits@0 {
-                compatible = "gpio-three-digits";
+                compatible = "three-digits";
                 pinctrl-names = "default";
                 pinctrl-0 = <&three_digits_pins>;
                 gpios-three-digits = <&gpio 2  1>,
