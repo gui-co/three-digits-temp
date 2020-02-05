@@ -1,6 +1,8 @@
 /dts-v1/;
 /plugin/;
 
+#include "gpios_three_digits.h"
+
 #include <dt-bindings/pinctrl/bcm2835.h>
 #include <dt-bindings/gpio/gpio.h>
 
@@ -11,7 +13,17 @@
         target = <&gpio>;
         __overlay__ {
             three_digits_pins: three-digits-pins@0 {
-                brcm,pins = <2 3 4 7 8 9 10 11 14 15 17 18>;
+                brcm,pins = <GPIO_DIGIT_1_POWER
+                             GPIO_DIGIT_2_POWER
+                             GPIO_DIGIT_3_POWER
+                             GPIO_SEG_A
+                             GPIO_SEG_B
+                             GPIO_SEG_C
+                             GPIO_SEG_D
+                             GPIO_SEG_E
+                             GPIO_SEG_F
+                             GPIO_SEG_G
+                             GPIO_DOT>;
                 brcm,function = <BCM2835_FSEL_GPIO_OUT>;
                 brcm,pull = <BCM2835_PUD_UP>;
             };
@@ -25,18 +37,17 @@
                 compatible = "three-digits";
                 pinctrl-names = "default";
                 pinctrl-0 = <&three_digits_pins>;
-                gpios-three-digits = <&gpio 2  GPIO_ACTIVE_HIGH>,
-                                     <&gpio 3  GPIO_ACTIVE_HIGH>,
-                                     <&gpio 4  GPIO_ACTIVE_HIGH>,
-                                     <&gpio 7  GPIO_ACTIVE_HIGH>,
-                                     <&gpio 8  GPIO_ACTIVE_HIGH>,
-                                     <&gpio 9  GPIO_ACTIVE_HIGH>,
-                                     <&gpio 10 GPIO_ACTIVE_HIGH>,
-                                     <&gpio 11 GPIO_ACTIVE_HIGH>,
-                                     <&gpio 14 GPIO_ACTIVE_HIGH>,
-                                     <&gpio 15 GPIO_ACTIVE_HIGH>,
-                                     <&gpio 17 GPIO_ACTIVE_HIGH>,
-                                     <&gpio 18 GPIO_ACTIVE_HIGH>;
+                power-gpios = <&gpio GPIO_DIGIT_1_POWER  GPIO_ACTIVE_HIGH>,
+                              <&gpio GPIO_DIGIT_2_POWER  GPIO_ACTIVE_HIGH>,
+                              <&gpio GPIO_DIGIT_3_POWER  GPIO_ACTIVE_HIGH>;
+                led-gpios =   <&gpio GPIO_SEG_A          GPIO_ACTIVE_HIGH>,
+                              <&gpio GPIO_SEG_B          GPIO_ACTIVE_HIGH>,
+                              <&gpio GPIO_SEG_C          GPIO_ACTIVE_HIGH>,
+                              <&gpio GPIO_SEG_D          GPIO_ACTIVE_HIGH>,
+                              <&gpio GPIO_SEG_E          GPIO_ACTIVE_HIGH>,
+                              <&gpio GPIO_SEG_F          GPIO_ACTIVE_HIGH>,
+                              <&gpio GPIO_SEG_G          GPIO_ACTIVE_HIGH>,
+                              <&gpio GPIO_DOT            GPIO_ACTIVE_HIGH>;
             };
         };
     };
