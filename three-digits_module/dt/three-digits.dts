@@ -1,6 +1,9 @@
 /dts-v1/;
 /plugin/;
 
+#include <dt-bindings/pinctrl/bcm2835.h>
+#include <dt-bindings/gpio/gpio.h>
+
 /{
     compatible = "brcm,bcm2835";
 
@@ -9,8 +12,8 @@
         __overlay__ {
             three_digits_pins: three-digits-pins@0 {
                 brcm,pins = <2 3 4 7 8 9 10 11 14 15 17 18>;
-                brcm,function = <1>;
-                brcm,pull = <0>;
+                brcm,function = <BCM2835_FSEL_GPIO_OUT>;
+                brcm,pull = <BCM2835_PUD_UP>;
             };
         };
     };
@@ -22,18 +25,18 @@
                 compatible = "three-digits";
                 pinctrl-names = "default";
                 pinctrl-0 = <&three_digits_pins>;
-                gpios-three-digits = <&gpio 2  1>,
-                                     <&gpio 3  1>,
-                                     <&gpio 4  1>,
-                                     <&gpio 7  1>,
-                                     <&gpio 8  1>,
-                                     <&gpio 9  1>,
-                                     <&gpio 10 1>,
-                                     <&gpio 11 1>,
-                                     <&gpio 14 1>,
-                                     <&gpio 15 1>,
-                                     <&gpio 17 1>,
-                                     <&gpio 18 1>;
+                gpios-three-digits = <&gpio 2  GPIO_ACTIVE_HIGH>,
+                                     <&gpio 3  GPIO_ACTIVE_HIGH>,
+                                     <&gpio 4  GPIO_ACTIVE_HIGH>,
+                                     <&gpio 7  GPIO_ACTIVE_HIGH>,
+                                     <&gpio 8  GPIO_ACTIVE_HIGH>,
+                                     <&gpio 9  GPIO_ACTIVE_HIGH>,
+                                     <&gpio 10 GPIO_ACTIVE_HIGH>,
+                                     <&gpio 11 GPIO_ACTIVE_HIGH>,
+                                     <&gpio 14 GPIO_ACTIVE_HIGH>,
+                                     <&gpio 15 GPIO_ACTIVE_HIGH>,
+                                     <&gpio 17 GPIO_ACTIVE_HIGH>,
+                                     <&gpio 18 GPIO_ACTIVE_HIGH>;
             };
         };
     };
