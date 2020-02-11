@@ -4,7 +4,30 @@
 #include <linux/platform_device.h>
 #include <linux/gpio/consumer.h>
 
+// number of 7 segments digits
 #define N_DIGITS 3
+
+// to be applied on segments gpios
+//
+//       __a__
+//    f /     / b
+//     /__g__/
+//  e /     / c
+//   /_____/
+//      d
+//                          a  b  c  d  e  f  g
+//                          |  |  |  |  |  |  |
+static int CHAR_0[7]     = {1, 1, 1, 1, 1, 1, 0};  // display a '0'
+static int CHAR_1[7]     = {0, 1, 1, 0, 0, 0, 0};  // displat a '1'
+static int CHAR_2[7]     = {1, 1, 0, 1, 1, 0, 1};  // display a '2'
+static int CHAR_3[7]     = {1, 1, 1, 1, 0, 0, 1};  // display a '3'
+static int CHAR_4[7]     = {0, 1, 1, 0, 0, 1, 1};  // display a '4'
+static int CHAR_5[7]     = {1, 0, 1, 1, 0, 1, 1};  // display a '5'
+static int CHAR_6[7]     = {1, 0, 1, 1, 1, 1, 1};  // display a '6'
+static int CHAR_7[7]     = {1, 1, 1, 0, 0, 0, 0};  // display a '7'
+static int CHAR_8[7]     = {1, 1, 1, 1, 1, 1, 1};  // display a '8'
+static int CHAR_9[7]     = {1, 1, 1, 1, 0, 1, 1};  // display a '9'
+static int CHAR_SPACE[7] = {0, 0, 0, 0, 0, 0, 0};  // displat a ' '
 
 struct three_digits_data {
     char characters[N_DIGITS];           // character for earch digit
@@ -12,6 +35,44 @@ struct three_digits_data {
     struct gpio_desc *powers[N_DIGITS];  // gpios that control each digit power line
     struct gpio_descs *segments;         // gpios of the differents segments
 };
+
+static void three_digits_display_char(struct gpio_descs *s, char c) {
+    switch (c) {
+        case '0':
+            gpiod_set_array_value(s->ndescs, s->desc, CHAR_0);
+            break;
+        case '1':
+            gpiod_set_array_value(s->ndescs, s->desc, CHAR_1);
+            break;
+        case '2':
+            gpiod_set_array_value(s->ndescs, s->desc, CHAR_2);
+            break;
+        case '3':
+            gpiod_set_array_value(s->ndescs, s->desc, CHAR_3);
+            break;
+        case '4':
+            gpiod_set_array_value(s->ndescs, s->desc, CHAR_4);
+            break;
+        case '5':
+            gpiod_set_array_value(s->ndescs, s->desc, CHAR_5);
+            break;
+        case '6':
+            gpiod_set_array_value(s->ndescs, s->desc, CHAR_6);
+            break;
+        case '7':
+            gpiod_set_array_value(s->ndescs, s->desc, CHAR_7);
+            break;
+        case '8':
+            gpiod_set_array_value(s->ndescs, s->desc, CHAR_8);
+            break;
+        case '9':
+            gpiod_set_array_value(s->ndescs, s->desc, CHAR_9);
+            break;
+        default:
+            gpiod_set_array_value(s->ndescs, s->desc, CHAR_SPACE);
+            break;
+    }
+}
 
 static int three_digits_start(struct platform_device *pdev) {
     struct device *dev;
@@ -29,7 +90,7 @@ static int three_digits_start(struct platform_device *pdev) {
             return PTR_ERR(s->powers[d]);
     }
 
-    s->segments = devm_gpiod_get_array(dev, "leds", GPIOD_OUT_LOW);
+    s->segments = devm_gpiod_get_array(dev, "led", GPIOD_OUT_LOW);
     if (IS_ERR(s->segments))
         return PTR_ERR(s->segments);
 
