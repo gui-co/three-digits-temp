@@ -54,4 +54,5 @@ static struct platform_driver three_digits_driver = {
 
 module_platform_driver(three_digits_driver);
 MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Guillaume Communie <guillaume.communie@gmail.com>");
 
