@@ -20,11 +20,18 @@ static int three_digits_start(struct platform_device *pdev) {
 
     dev = &pdev->dev;
     s = devm_kzalloc(dev, sizeof(struct three_digits_data), GFP_KERNEL);
+    if (!s)
+        return -ENOMEM;
 
-    for (d = 0 ; d < N_DIGITS ; d++)
+    for (d = 0 ; d < N_DIGITS ; d++) {
         s->powers[d] = devm_gpiod_get_index(dev, "power", d, GPIOD_OUT_LOW);
+        if (IS_ERR(s->powers[d]))
+            return PTR_ERR(s->powers[d]);
+    }
 
     s->segments = devm_gpiod_get_array(dev, "leds", GPIOD_OUT_LOW);
+    if (IS_ERR(s->segments))
+        return PTR_ERR(s->segments);
 
     platform_set_drvdata(pdev, s);
 
