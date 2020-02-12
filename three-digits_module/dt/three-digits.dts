@@ -40,14 +40,14 @@
                 power-gpios = <&gpio GPIO_DIGIT_1_POWER  GPIO_ACTIVE_HIGH>,
                               <&gpio GPIO_DIGIT_2_POWER  GPIO_ACTIVE_HIGH>,
                               <&gpio GPIO_DIGIT_3_POWER  GPIO_ACTIVE_HIGH>;
-                led-gpios =   <&gpio GPIO_SEG_A          GPIO_ACTIVE_HIGH>,
-                              <&gpio GPIO_SEG_B          GPIO_ACTIVE_HIGH>,
-                              <&gpio GPIO_SEG_C          GPIO_ACTIVE_HIGH>,
-                              <&gpio GPIO_SEG_D          GPIO_ACTIVE_HIGH>,
-                              <&gpio GPIO_SEG_E          GPIO_ACTIVE_HIGH>,
-                              <&gpio GPIO_SEG_F          GPIO_ACTIVE_HIGH>,
-                              <&gpio GPIO_SEG_G          GPIO_ACTIVE_HIGH>,
-                              <&gpio GPIO_DOT            GPIO_ACTIVE_HIGH>;
+                led-gpios =   <&gpio GPIO_SEG_A          GPIO_ACTIVE_LOW>,
+                              <&gpio GPIO_SEG_B          GPIO_ACTIVE_LOW>,
+                              <&gpio GPIO_SEG_C          GPIO_ACTIVE_LOW>,
+                              <&gpio GPIO_SEG_D          GPIO_ACTIVE_LOW>,
+                              <&gpio GPIO_SEG_E          GPIO_ACTIVE_LOW>,
+                              <&gpio GPIO_SEG_F          GPIO_ACTIVE_LOW>,
+                              <&gpio GPIO_SEG_G          GPIO_ACTIVE_LOW>,
+                              <&gpio GPIO_DOT            GPIO_ACTIVE_LOW>;
             };
         };
     };
