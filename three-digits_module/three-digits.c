@@ -114,6 +114,32 @@ static int three_digits_loop(void *data) {
     return 0;
 }
 
+/*****************************************************************************
+ * sysfs                                                                     *
+ *****************************************************************************/
+
+ssize_t three_digits_sysfs_store_status(struct device *dev,
+                                        struct device_attribute *attr,
+                                        const char *buf, size_t count) {
+    bool on = false;
+
+    if (strtobool(buf, &on) < 0)
+        return -EINVAL;
+
+    if (on)
+        wake_up_process(three_digits_task);
+    else
+        kthread_stop(three_digits_task);
+
+    return count;
+}
+
+static DEVICE_ATTR(on, 0200, NULL, three_digits_sysfs_store_status);
+
+/*****************************************************************************
+ * driver                                                                    *
+ *****************************************************************************/
+
 static int three_digits_start(struct platform_device *pdev) {
     struct device *dev;
     struct three_digits_data *s;
@@ -136,6 +162,9 @@ static int three_digits_start(struct platform_device *pdev) {
 
     platform_set_drvdata(pdev, s);
 
+    // create sysfs
+    device_create_file(dev, &dev_attr_on);
+
     // start main loop
     three_digits_task = kthread_run(three_digits_loop, (void*) s,
                                     "three-digits-loop");
@@ -145,9 +174,14 @@ static int three_digits_start(struct platform_device *pdev) {
 
 static int three_digits_stop(struct platform_device *pdev) {
     struct three_digits_data *data;
+    struct device *dev;
+
+    dev = &pdev->dev;
 
     data = platform_get_drvdata(pdev);
     kthread_stop(three_digits_task);
+
+    device_remove_file(dev, &dev_attr_on);
 
     return 0;
 }
