@@ -42,8 +42,13 @@ struct three_digits_data {
     bool dots[N_DIGITS];                 // dot for each digit
     struct gpio_desc *powers[N_DIGITS];  // gpios that control each digit power line
     struct gpio_descs *segments;         // gpios of the differents segments
-    struct task_struct *three_digits_task;
 };
+
+/*****************************************************************************
+ * digits loop task                                                          *
+ *****************************************************************************/
+
+static struct task_struct *three_digits_task;
 
 static void three_digits_display_char(struct gpio_descs *s, char c) {
     switch (c) {
@@ -131,8 +136,9 @@ static int three_digits_start(struct platform_device *pdev) {
 
     platform_set_drvdata(pdev, s);
 
-    s->three_digits_task = kthread_run(three_digits_loop, (void*) s,
-                                       "three-digits-loop");
+    // start main loop
+    three_digits_task = kthread_run(three_digits_loop, (void*) s,
+                                    "three-digits-loop");
 
     return 0;
 }
@@ -141,7 +147,7 @@ static int three_digits_stop(struct platform_device *pdev) {
     struct three_digits_data *data;
 
     data = platform_get_drvdata(pdev);
-    kthread_stop(data->three_digits_task);
+    kthread_stop(three_digits_task);
 
     return 0;
 }
