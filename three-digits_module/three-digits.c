@@ -5,6 +5,8 @@
 #include <linux/gpio/consumer.h>
 #include <linux/kthread.h>
 #include <linux/delay.h>
+#include <linux/ctype.h>
+#include <linux/string.h>
 
 // number of 7 segments digits
 #define N_DIGITS 3
@@ -134,7 +136,62 @@ ssize_t three_digits_sysfs_store_status(struct device *dev,
     return count;
 }
 
+ssize_t three_digits_sysfs_store_value(struct device *dev,
+                                       struct device_attribute *attr,
+                                       const char *buf, size_t count) {
+
+    char tmp_chars[N_DIGITS];
+    bool tmp_dots[N_DIGITS];
+    int i;
+    int current_digit;
+    struct three_digits_data* drv_data;
+
+    current_digit = 0;
+    memset(tmp_chars, ' ', N_DIGITS);
+    memset(tmp_dots, false, N_DIGITS);
+
+    // read buf from the end
+    i = count - 1;
+    while (i >= 0) {
+        if (current_digit >= N_DIGITS) {
+            printk(KERN_INFO "[three-digits] Error: not enough digit to print "
+                             "value %s\n", buf);
+            return -EINVAL;
+        }
+
+        if (buf[i] == '\n') {
+            i--;
+        } else if (isalnum(buf[i]) || buf[i] == ' ') {
+            tmp_chars[current_digit] = buf[i];
+            tmp_dots[current_digit] = false;
+            current_digit++;
+            i--;
+        } else if (buf[i] == '.') {
+            if ((current_digit > 0) && tmp_dots[current_digit - 1] == false) {
+                tmp_dots[current_digit - 1] = true;
+            } else {
+                tmp_chars[current_digit] = ' ';
+                tmp_dots[current_digit] = true;
+                current_digit++;
+            }
+            i--;
+        } else {
+            printk(KERN_INFO "[three-digits] Error: invalid character %c\n",
+                   buf[i]);
+            return -EINVAL;
+        }
+    }
+
+    // everything ok, fill the data fields
+    drv_data = dev_get_drvdata(dev);
+    memcpy(drv_data->characters, tmp_chars, N_DIGITS);
+    memcpy(drv_data->dots, tmp_dots, N_DIGITS);
+
+    return count;
+}
+
 static DEVICE_ATTR(on, 0200, NULL, three_digits_sysfs_store_status);
+static DEVICE_ATTR(value, 0200, NULL, three_digits_sysfs_store_value);
 
 /*****************************************************************************
  * driver                                                                    *
@@ -164,6 +221,7 @@ static int three_digits_start(struct platform_device *pdev) {
 
     // create sysfs
     device_create_file(dev, &dev_attr_on);
+    device_create_file(dev, &dev_attr_value);
 
     // start main loop
     three_digits_task = kthread_run(three_digits_loop, (void*) s,
@@ -182,6 +240,7 @@ static int three_digits_stop(struct platform_device *pdev) {
     kthread_stop(three_digits_task);
 
     device_remove_file(dev, &dev_attr_on);
+    device_remove_file(dev, &dev_attr_value);
 
     return 0;
 }
